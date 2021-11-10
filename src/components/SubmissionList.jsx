@@ -2,38 +2,37 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 
 const SubmissionList = ({ submissions }) => {
-  const [submissonFilter, setSubmissonFilter] = useState(submissions);
+  const [submissionFilter, setSubmissionFilter] = useState(submissions);
   const [inputValue, setInputValue] = useState("");
   const [order, setOrder] = useState(1);
 
   const handleChange = (e) => {
-    let { value } = e.target;
-    if (!value.trim()) {
-      setSubmissonFilter(submissions);
-    }
-    setInputValue(value);
+    const { value } = e.target;
+    const trimmedValue = value.trim();
+    setInputValue(trimmedValue);
+    return !trimmedValue ? setSubmissionFilter(submissions) : false;
   }
 
   const handleSearch = () => {
     if (inputValue) {
-      let result = submissions.filter((submisson) => {
+      const result = submissions.filter((submisson) => {
         return (
           submisson.name
             .toLowerCase()
-            .match(inputValue.toLocaleLowerCase().trim()) ||
+            .match(inputValue.toLocaleLowerCase()) ||
           submisson.description
             .toLowerCase()
-            .match(inputValue.toLocaleLowerCase().trim())
+            .match(inputValue.toLocaleLowerCase())
         );
       });
-      setSubmissonFilter(result);
+      setSubmissionFilter(result);
     } else {
-      setSubmissonFilter(submissions);
+      setSubmissionFilter(submissions);
     }
   }
 
   const handleSortBy = (name) => {
-    let result = submissonFilter.sort((a, b) =>
+    const result = submissionFilter.sort((a, b) =>
       name === "name"
         ? a.name.toLowerCase() > b.name.toLowerCase()
           ? order
@@ -43,7 +42,7 @@ const SubmissionList = ({ submissions }) => {
           : -order
     );
     setOrder(-order);
-    setSubmissonFilter(result);
+    setSubmissionFilter(result);
   }
 
   return (
@@ -60,7 +59,7 @@ const SubmissionList = ({ submissions }) => {
       />
       <button onClick={handleSearch}>Search</button>
       <div className="submissions">
-        {submissonFilter.map((s) => (
+        {submissionFilter.map((s) => (
           <div key={s.name} className="submission">
             <h1>{s.name}</h1>
             <p>{s.created_at}</p>
