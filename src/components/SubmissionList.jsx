@@ -2,13 +2,12 @@ import React, { useState, useMemo } from "react";
 import PropTypes from "prop-types";
 
 const SubmissionList = ({ submissions: initialSubmissions }) => {
-  const [initial] = useState(initialSubmissions);
   const [text, setText] = useState("");
   const [sorting, setSorting] = useState({ field: "", order: "" });
   const [search, setSearch] = useState("");
 
   const submissions = useMemo(() => {
-    let computedInitial = initial;
+    let computedInitial = initialSubmissions;
 
     if (search) {
       computedInitial = computedInitial.filter(
@@ -26,7 +25,7 @@ const SubmissionList = ({ submissions: initialSubmissions }) => {
     }
 
     return computedInitial;
-  }, [initial, sorting, search]);
+  }, [initialSubmissions, sorting, search]);
 
   const handleChange = (e) => {
     setText(e.target.value);
