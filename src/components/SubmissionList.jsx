@@ -2,16 +2,16 @@ import React, { useState, useMemo } from "react";
 import PropTypes from "prop-types";
 
 const SubmissionList = ({ submissions: initialSubmissions }) => {
-  const [intital] = useState(initialSubmissions);
+  const [initial] = useState(initialSubmissions);
   const [text, setText] = useState("");
   const [sorting, setSorting] = useState({ field: "", order: "" });
   const [search, setSearch] = useState("");
 
   const submissions = useMemo(() => {
-    let intitalCopy = intital;
+    let computedInitial = initial;
 
     if (search) {
-      intitalCopy = intitalCopy.filter(
+      computedInitial = computedInitial.filter(
         (submission) =>
           submission.name.toLowerCase().includes(search.toLowerCase()) ||
           submission.description.toLowerCase().includes(search.toLowerCase())
@@ -20,13 +20,13 @@ const SubmissionList = ({ submissions: initialSubmissions }) => {
 
     if (sorting.field) {
       const reversed = sorting.order === "asc" ? 1 : -1;
-      intitalCopy = intitalCopy.sort(
+      computedInitial = computedInitial.sort(
         (a, b) => reversed * a[sorting.field].localeCompare(b[sorting.field])
       );
     }
 
-    return intitalCopy;
-  }, [intital, sorting, search]);
+    return computedInitial;
+  }, [initial, sorting, search]);
 
   const handleChange = (e) => {
     const { value } = e.target;
