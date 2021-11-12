@@ -29,9 +29,7 @@ const SubmissionList = ({ submissions: initialSubmissions }) => {
   }, [initial, sorting, search]);
 
   const handleChange = (e) => {
-    const { value } = e.target;
-    const trimmedValue = value.trim();
-    setText(trimmedValue);
+    setText(e.target.value);
   };
 
   const handleSearch = () => {
