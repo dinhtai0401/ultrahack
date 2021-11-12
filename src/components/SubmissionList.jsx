@@ -1,65 +1,64 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import PropTypes from "prop-types";
 
-const SubmissionList = ({ submissions }) => {
-  const [submissionFilter, setSubmissionFilter] = useState(submissions);
-  const [inputValue, setInputValue] = useState("");
-  const [order, setOrder] = useState(1);
+const SubmissionList = ({ submissions: initialSubmissions }) => {
+  const [intital] = useState(initialSubmissions);
+  const [text, setText] = useState("");
+  const [sorting, setSorting] = useState({ field: "", order: "" });
+  const [search, setSearch] = useState("");
+
+  const submissions = useMemo(() => {
+    let intitalCopy = intital;
+
+    if (search) {
+      intitalCopy = intitalCopy.filter(
+        (submission) =>
+          submission.name.toLowerCase().includes(search.toLowerCase()) ||
+          submission.description.toLowerCase().includes(search.toLowerCase())
+      );
+    }
+
+    if (sorting.field) {
+      const reversed = sorting.order === "asc" ? 1 : -1;
+      intitalCopy = intitalCopy.sort(
+        (a, b) => reversed * a[sorting.field].localeCompare(b[sorting.field])
+      );
+    }
+
+    return intitalCopy;
+  }, [intital, sorting, search]);
 
   const handleChange = (e) => {
     const { value } = e.target;
     const trimmedValue = value.trim();
-    setInputValue(trimmedValue);
-    return !trimmedValue ? setSubmissionFilter(submissions) : false;
-  }
+    setText(trimmedValue);
+  };
 
   const handleSearch = () => {
-    if (inputValue) {
-      const result = submissions.filter((submisson) => {
-        return (
-          submisson.name
-            .toLowerCase()
-            .match(inputValue.toLocaleLowerCase()) ||
-          submisson.description
-            .toLowerCase()
-            .match(inputValue.toLocaleLowerCase())
-        );
-      });
-      setSubmissionFilter(result);
-    } else {
-      setSubmissionFilter(submissions);
-    }
-  }
+    setSearch(text)
+  };
 
-  const handleSortBy = (name) => {
-    const result = submissionFilter.sort((a, b) =>
-      name === "name"
-        ? a.name.toLowerCase() > b.name.toLowerCase()
-          ? order
-          : -order
-        : a.created_at > b.created_at
-          ? order
-          : -order
-    );
-    setOrder(-order);
-    setSubmissionFilter(result);
-  }
+  const onSortingChange = (field) => () => {
+    const order =
+      field === sorting.field && sorting.order === "asc" ? "desc" : "asc";
+    setSorting({ field, order });
+  };
 
   return (
     <div>
-      <button onClick={() => handleSortBy("created_at")}>
+      <button onClick={onSortingChange("created_at")}>
         Sort by creation date
       </button>
-      <button onClick={() => handleSortBy("name")}>Sort by name</button>
+      <button onClick={onSortingChange("name")}>Sort by name</button>
       <input
         type="text"
         onChange={handleChange}
-        value={inputValue}
+        value={text}
         placeholder="Search"
       />
       <button onClick={handleSearch}>Search</button>
       <div className="submissions">
-        {submissionFilter.map((s) => (
+        {submissions.map((s) => (
           <div key={s.name} className="submission">
             <h1>{s.name}</h1>
             <p>{s.created_at}</p>
