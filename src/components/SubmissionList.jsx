@@ -38,7 +38,7 @@ const SubmissionList = ({ submissions: initialSubmissions }) => {
     setSearch(text)
   };
 
-  const onSortingChange = (field) => () => {
+  const onSortingChange = field => () => {
     const order =
       field === sorting.field && sorting.order === "asc" ? "desc" : "asc";
     setSorting({ field, order });
