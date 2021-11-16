@@ -12,9 +12,18 @@ const SubmissionList = ({ submissions: initialSubmissions }) => {
     if (search) {
       computedInitial = computedInitial.filter(
         (submission) =>
-          submission.name.toLowerCase().includes(search.toLowerCase()) ||
-          submission.description.toLowerCase().includes(search.toLowerCase())
+          submission.name.toLowerCase() === search.toLowerCase() ||
+          submission.description.toLowerCase() === search.toLowerCase()
       );
+
+
+      // Miss understand of the assigment ( match whole words ) Ex: brown bear !== brown bears
+
+      // computedInitial = computedInitial.filter(
+      //   (submission) =>
+      //     submission.name.toLowerCase().includes(search.toLowerCase()) ||
+      //     submission.description.toLowerCase().includes(search.toLowerCase())
+      // );
     }
 
     if (sorting.field) {
